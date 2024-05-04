@@ -1,3 +1,3 @@
 module.exports.about = function(req, res) {
-    res.render('index', {title: 'ExprAbout'});
+    res.render('generic-text', {title: 'ExprAbout'});
 };
