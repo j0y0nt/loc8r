@@ -1,5 +1,23 @@
 mixin outputRating(rating)
     - for (var i = 1; i <= rating; i++)
-        span.bi.bi-star-fill
+        span.bi.bi-star-fill 
     - for (i = rating; i < 5; i++)
-        span.bi.bi-star
+        span.bi.bi-star 
+
+mixin formatDate(dateString)
+    -var date = new Date(dateString);
+    -var monthNames = [ "January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December" ];
+    -var d = date.getDate();
+    -var m = monthNames[date.getMonth()];
+    -var y = date.getFullYear();
+    -var output = d + ' ' + m + ' ' + y;
+    =output
+
+mixin businessHourStr(businessInfo)
+    - var output = '';
+    - if( businessInfo.closed ) {
+    - output = output.concat(businessInfo.days, ': Closed');
+    - } else { 
+    - output = output.concat(businessInfo.days,' : ', businessInfo.opening, ' - ', businessInfo.closing);
+    - }
+    =output

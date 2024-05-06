@@ -75,9 +75,39 @@ var _formatDistance = function (distance) {
     return numDistance + unit;
 };
 
+var renderDetailPage = function (req, res, locDetail) {
+    res.render('location-info', {
+        title: locDetail.name,
+        pageHeader: {title: locDetail.name},
+        sidebar: {
+            context: 'Costly is on Loc8r because it has accessible wifi and space to sit down with your laptop and get some work done.',
+            callToAction: 'If you\'ve been and you like it - or if you don\'t -please leave a review to help other people just like you.'
+        },
+        location: locDetail
+    });
+};
+
 /* GET 'Location info' page */
 module.exports.locationInfo = function (req, res) {
-    res.render('location-info', { title: 'Location info' });
+    var requestOptions, path;
+    path = "/api/locations/" + req.params.locationid;
+
+    requestOptions = {
+        url: apiOptions.server + path,
+        method: "GET",
+        json: {}
+    };
+    request(
+        requestOptions,
+        function(err, response, body) {
+            var data = body;
+            data.coords = {
+                lng : body.coords[0],
+                lat : body.coords[1]
+            };
+            renderDetailPage(req, res, data);
+        }
+    );
 };
 
 /* GET "Add review page" */
