@@ -11,11 +11,12 @@ if (process.platform === "win32") {
         process.emit("SIGINT");
     });
 }
-var dbURI = 'mongodb://localhost/Loc8r';
+//var dbURI = 'mongodb://localhost/Loc8r';
+var dbURI = 'mongodb://locater:pwdpwd@127.0.0.1:27017/Loc8r';
 if (process.env.NODE_ENV === 'production') {
     dbURI = process.env.MONGOLAB_URI;
 }
-mongoose.connect(dbURI);
+mongoose.connect(dbURI, {authSource: "admin"});
 
 mongoose.connection.on('connected', function () {
     console.log('Mongoose connected to ' + dbURI);

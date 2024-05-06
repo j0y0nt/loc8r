@@ -12,10 +12,24 @@ module.exports.locationsListByDistance = function (req, res) {
 
 module.exports.locationsCreate = function (req, res) {
     sendJsonResponse(res, 200, {"status": "success"});
-};
+};  
 
-module.exports.locationsReadOne =   function (req, res) {
-    sendJsonResponse(res, 200, {"status": "success"});
+module.exports.locationsReadOne =  async function (req, res) {
+
+    if(!req.param && !req.param.locationid) {
+        sendJsonResponse(res, 404, {
+            "message": "No LocationId in request."
+        });
+        
+    } else {
+        const location = await Loc.findById(req.params.locationid).exec();
+
+        if(location == null) {
+            sendJsonResponse(res, 404, "location id not found.");
+        }  else {
+            sendJsonResponse(res, 200, location);
+        }
+    }
 };
 
 module.exports.locationsUpdateOne = function (req, res) {
