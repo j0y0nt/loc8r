@@ -81,7 +81,7 @@ module.exports.reviewsCreate = async function (req, res) {
             "message": "Not found, locationid required."
         });
     }
-    sendJsonResponse(res, 200, { "status": "success" });
+    
 };
 
 module.exports.reviewsReadOne = async function (req, res) {
