@@ -44,7 +44,6 @@ var doAddReview = async function (req, res, location) {
             "message": "locationid not found"
         });
     } else {
-        console.log('---- req.body --- ' + JSON.stringify(req.body));
         location.reviews.push({
             author: req.body.author,
             rating: req.body.rating,
