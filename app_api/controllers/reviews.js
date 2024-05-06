@@ -124,7 +124,40 @@ module.exports.reviewsReadOne = async function (req, res) {
 };
 
 module.exports.reviewsupdateOne = function (req, res) {
-    sendJsonResponse(res, 200, { "status": "success" });
+    if(!request.params.locationid || !req.params.reviewid) {
+        sendJsonResponse(res, 404, {
+            "messgae": "Not found locationid and reveiwid are both required." 
+        });
+        return;
+    }
+
+    const location = Loc.findById(req.params.locationid).select('reviews').exec();
+
+    if(!location) {
+        sendJsonResponse(res, 404, { "message": "Location with id "+ locationid + " not found." });
+    }
+
+    if(!location.reviews && location.reviews.length <= 1) {
+        sendJsonResponse(res, 404, { "message": "No review to update."  });
+    }
+
+    var theReview = location.reviews.id(req.params.reviewid);
+
+    if(!theReview) {
+        sendJsonResponse(res, 404, "The review with id " + reviewid + " not found.");
+    }
+
+    theReview.author = req.body.author;
+    theReview.rating = req.boyd.rating;
+    theReview.reviewText =req.body.reviewText;
+
+    const updatedLocation= location.save();
+
+    if(!updatedLocation) {
+        sendJsonResponse(res, 404, "message", "error while updating review.");
+    }
+    updateAverageRating(updatedLocation._id);
+    sendJsonResponse(res, 200, theReview );
 };
 
 module.exports.reviewsDeleteOne = function (req, res) {
