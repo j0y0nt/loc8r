@@ -161,5 +161,39 @@ module.exports.reviewsupdateOne = function (req, res) {
 };
 
 module.exports.reviewsDeleteOne = function (req, res) {
-    sendJsonResponse(res, 200, { "status": "success" });
+    if(!request.params.locationid || !req.params.reviewid) {
+        sendJsonResponse(res, 404, {
+            "messgae": "Not found locationid and reveiwid are both required." 
+        });
+        return;
+    }
+
+    const location = Loc.findById(req.params.locationid).select('reviews').exec();
+
+    if(!location) {
+        sendJsonResponse(res, 404, { "message": "Location with id "+ locationid + " not found." });
+    }
+
+    if(!location.reviews && location.reviews.length <= 1) {
+        sendJsonResponse(res, 404, { "message": "No review to delete."  });
+    }
+
+    var theReview = location.reviews.id(req.params.reviewid).remove();
+
+    if(!theReview) {
+        sendJsonResponse(res, 404, "The review with id " + reviewid + " not found.");
+        return;
+    }
+
+    var delResult = location.save();
+
+    if(!delResult) {
+        sendJsonResponse(res, 404, "message", "Error on deleting review.");
+    }
+
+    // Update average location rating
+    updateAverageRating(updatedLocation._id);
+    
+    // send success response after deleting review.
+    sendJsonResponse(res, 204, null );
 };
