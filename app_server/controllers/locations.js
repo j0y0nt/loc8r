@@ -167,17 +167,22 @@ module.exports.doAddReview = function(req, res) {
         json: postdata
     };
 
-    request(
-        reqOptions,
-        function(error, response, body) {
-            //console.log(response);
-            if(response.statusCode === 201) {
-                res.redirect('/location/' + locationid);
-            } else if(response.statusCode === 400 && body.name && body.name === "ValidationError") {
-                res.redirect('/location/' + locationid + '/reviews/new?err=val');
-            }  else {
-                _showError(req, res, response.statusCode);
+    if (!postdata.author || !postdata.rating || !postdata.reviewText) {
+        res.redirect('/location/' + locationid + '/reviews/new?err=val');
+    } else {
+        request(
+            reqOptions,
+            function(error, response, body) {
+                //console.log(response);
+                if(response.statusCode === 201) {
+                    res.redirect('/location/' + locationid);
+                } else if(response.statusCode === 400 && body.name && body.name === "ValidationError") {
+                    res.redirect('/location/' + locationid + '/reviews/new?err=val');
+                }  else {
+                    _showError(req, res, response.statusCode);
+                }
             }
-        }
-    );
+        );
+    }
+    
 };
