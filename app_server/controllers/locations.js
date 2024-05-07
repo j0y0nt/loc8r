@@ -87,31 +87,37 @@ var renderDetailPage = function (req, res, locDetail) {
     });
 };
 
-/* GET 'Location info' page */
-module.exports.locationInfo = function (req, res) {
+var getLocationInfo = function (req, res, callback) {
     var requestOptions, path;
     path = "/api/locations/" + req.params.locationid;
-
     requestOptions = {
-        url: apiOptions.server + path,
+        url:  apiOptions.server + path,
         method: "GET",
         json: {}
     };
+
     request(
         requestOptions,
-        function (err, response, body) {
-            if (response.statusCode === 200) {
-                var data = body;
+        function(error, response, body) {
+            var data = body;
+            if(response.statusCode === 200) {
                 data.coords = {
                     lng: body.coords[0],
-                    lat: body.coords[1]
+                    lat : body.coords[1]
                 };
-                renderDetailPage(req, res, data);
+                callback(req, res, data);
             } else {
                 _showError(req, res, response.statusCode);
             }
         }
-    );
+    )
+};
+
+/* GET 'Location info' page */
+module.exports.locationInfo = function (req, res) {
+    getLocationInfo(req, res, function(req, res, responseData) {
+        renderDetailPage(req, res, responseData);
+    });
 };
 
 var _showError = function (req, res, status) {
@@ -130,11 +136,20 @@ var _showError = function (req, res, status) {
     });
 };
 
+var renderReviewForm = function (req, res, locDetail) {
+    res.render('location-review-form', {
+        title: 'Review ' + locDetail.name + ' on Loc8r',
+        pageHeader: {title:  'Review ' + locDetail.name }
+    });
+};
+
 /* GET "Add review page" */
 module.exports.addReview = function (req, res) {
-    res.render('location-review-form', { title: 'Add review' });
+    getLocationInfo(req, res, function(req, res, responseData) {
+        renderReviewForm(req, res, responseData);
+    });
 };
 
 module.exports.doAddReview = function(req, res) {
-    
+
 };
