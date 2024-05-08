@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 require('./app_api/models/db');
 
+var uglifyJs = require("uglify-js");
+var fs = require('fs');
+
 var indexRouter = require('./app_server/routes/index');
 var usersRouter = require('./app_server/routes/users');
 
@@ -15,6 +18,28 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 app.set('view engine', 'jade');
+
+var appClientFiles = [
+  'app_client/app.js',
+  'app_client/home/home.controller.js',
+  'app_client/common/services/geolocation.service.js',
+  'app_client/common/services/loc8rData.service.js',
+  'app_client/common/filters/formatDistance.filter.js',
+  'app_client/common/directives/ratingStars/ratingStars.directive.js'
+];
+
+var filesContents = appClientFiles.map(function (file) {
+  return fs.readFileSync(file, 'utf8');
+})
+
+var uglified = uglifyJs.minify(filesContents, { compress: false });
+fs.writeFile('public/angular/loc8r.min.js', uglified.code, function (err) {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log('Script generated and saved: loc8r.min.js');
+  }
+});
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -31,12 +56,12 @@ app.use('/users', usersRouter);
 app.use('/api', routesApi);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
