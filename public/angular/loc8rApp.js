@@ -20,24 +20,19 @@ var formatDistance = function () {
     };
 };
 
-var locationListCtrl = function ($scope) {
-    $scope.data = {
-        locations: [{
-            name: 'Burger Queen',
-            address: '125 High Street, Reading, RG6 1PS',
-            rating: 3,
-            facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-            distance: '0.296456',
-            _id: '5370a35f2536f6785f8dfb6a'
-        }, {
-            name: 'Costy',
-            address: '125 High Street, Reading, RG6 1PS',
-            rating: 5,
-            facilities: ['Hot drinks', 'Food', 'Alcoholic drinks'],
-            distance: '0.7865456',
-            _id: '5370a35f2536f6785f8dfb6a'
-        }]
+var locationListCtrl = function ($scope, loc8rData) {
+    $scope.message = "Searching for nearby places";
+
+    var succCallback = function(response) {
+        $scope.message = response.data.length > 0 ? "" : "No locations found";
+        $scope.data = { locations: response.data };
     };
+
+    var failCallback = function(e) {
+        $scope.message = "Sorry, something's gone wrong ";
+    };
+
+    loc8rData.then(succCallback, failCallback);
 };
 
 var ratingStars = function () {
@@ -49,8 +44,13 @@ var ratingStars = function () {
     };
 }
 
+var loc8rData = function ($http) {
+    return $http.get('/api/locations?lng=-0.79&lat=51.3&maxDistance=20');
+};
+
 angular
     .module('loc8rApp', [])
     .controller('locationListCtrl', locationListCtrl)
     .filter('formatDistance', formatDistance)
-    .directive('ratingStars', ratingStars);
+    .directive('ratingStars', ratingStars)
+    .service('loc8rData', loc8rData);
