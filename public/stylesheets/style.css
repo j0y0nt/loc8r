@@ -6,3 +6,8 @@
 #filter {margin-left: 4px;}
 
 #rating {width: 60px;}
+
+.page-content {
+    padding: 30px;
+    min-height: calc(100vh - 167px);
+}
