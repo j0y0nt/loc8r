@@ -15,3 +15,8 @@
 #reviewPanel {
     margin-top: 2em;
 }
+
+.review-modal-bg {
+    background-color: antiquewhite;
+    opacity: 0.10
+}
