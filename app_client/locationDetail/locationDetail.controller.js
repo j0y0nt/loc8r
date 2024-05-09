@@ -21,6 +21,7 @@
         loc8rData.locationById(vm.locationid).then(cbSuccess, cbFailure);
 
         vm.popupReviewForm = function () {
+
             var modalInstance = $uibModal.open({
                 animation: false,
                 backdropClass: "review-modal-bg",
@@ -34,6 +35,10 @@
                         };
                     }
                 }
+            });
+
+            modalInstance.result.then(function (data) {
+                vm.data.location.reviews.push(data);
             });
         };
     }

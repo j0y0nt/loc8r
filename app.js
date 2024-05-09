@@ -14,6 +14,8 @@ var fs = require('fs');
 var routesApi = require('./app_api/routes/index');
 
 var app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Handle all API call.
 app.use('/api', routesApi);
@@ -52,13 +54,12 @@ fs.writeFile('public/angular/loc8r.min.js', uglified.code, function (err) {
 });
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'app_client')));
 
-app.use(function(req, res) {
+app.use(function (req, res) {
   res.sendFile(path.join(__dirname, 'app_client', 'index.html'));
 });
 //app.use('/', indexRouter);

@@ -38,43 +38,47 @@ var updateAverageRating = function (locationid) {
     }
 };
 
-var doAddReview = async function (req, res, location) {
-    
+var doAddReview = async function (_req, res, location) {
+
     if (!location) {
         sendJsonResponse(res, 404, {
             "message": "locationid not found"
         });
     } else {
-        
-        location.reviews.push({
-            author: req.body.author,
-            rating: req.body.rating,
-            reviewText: req.body.reviewText
-        });
-        
         let error;
         try {
-            const result = await location.save();            
+     
+            location.reviews.push({
+                author: _req.body.author,
+                rating: _req.body.rating,
+                reviewText: _req.body.reviewText
+            });
+
+            const result = await location.save();
             if (result) {
                 updateAverageRating(result._id);
                 thisReview = result.reviews[result.reviews.length - 1];
                 sendJsonResponse(res, 201, thisReview);
-            } 
+            }
         } catch (err) {
+            console.log(err);
             error = err;
             sendJsonResponse(res, 400, error);
         }
     }
 };
 module.exports.reviewsCreate = async function (req, res) {
+
     var locationid = req.params.locationid;
+
     if (locationid) {
+        
         const location = await Loc
             .findById(locationid)
             .select('reviews')
             .exec();
-        
-            if (location) {
+
+        if (location) {
             doAddReview(req, res, location);
         } else {
             sendJsonResponse(res, 400, err);
@@ -89,7 +93,7 @@ module.exports.reviewsCreate = async function (req, res) {
 };
 
 module.exports.reviewsReadOne = async function (req, res) {
-    
+
     if (req.params && req.params.locationid && req.params.reviewid) {
         const location = Loc
             .findById(req.params.locationid)
