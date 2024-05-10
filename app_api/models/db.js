@@ -55,3 +55,4 @@ process.on('SIGTERM', function () {
 
 // Import schema
 require('./locations');
+require('./users');
