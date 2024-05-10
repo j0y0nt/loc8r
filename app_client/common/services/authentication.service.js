@@ -14,20 +14,27 @@
 
         var cbRegisterError = function (result) {
             console.log(result);
-            //saveToken(result.token);
+            // TODOs: Handle registration error
         };
 
-        var cbRegisterSucess = function (result) {
-            saveToken(result.token);
+        var cbRegisterSuccess = function (result) {
+            saveToken(result.data.token);
         };
         register = function (user) {
-            return $http.post('/api/register', user).then(cbRegisterSucess, cbRegisterError);
+            return $http.post('/api/register', user).then(cbRegisterSuccess, cbRegisterError);
+        };
+
+        var cbLoginError = function (result) {
+            console.log(result);
+            // TODOs: Handle login error
+        };
+
+        var cbLoginSuccess = function (result) {
+            saveToken(result.data.token);
         };
 
         login = function (user) {
-            return $http.post('/api/login', user).success(function (data) {
-                saveToken(data.token);
-            });
+            return $http.post('/api/login', user).then(cbLoginSuccess, cbLoginError);
         };
 
         logout = function () {
