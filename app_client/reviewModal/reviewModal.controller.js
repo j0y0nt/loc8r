@@ -22,7 +22,7 @@
             vm.formError = "";
             console.log('name  ' + vm.formData.name);
             console.log(vm.formData);
-            if (!vm.formData.name || !vm.formData.rating || !vm.formData.reviewText) {
+            if ( !vm.formData.rating || !vm.formData.reviewText) {
                 vm.formError = "All fields required, please try again";
                 return false;
             } else {
@@ -43,7 +43,7 @@
             };
 
             loc8rData.addReviewById(locationid, {
-                "author": formData.name,
+               // "author": formData.name,
                 "rating": formData.rating,
                 "reviewText": formData.reviewText
             }).then(cbSuccess, cbError);

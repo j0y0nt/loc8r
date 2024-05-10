@@ -68,12 +68,14 @@ var doAddReview = async function (_req, res, location, author) {
     }
 };
 module.exports.reviewsCreate = async function (req, res) {
-
+    
     getAuthor(req, res, async function (req, res, userName) {
+
+        console.log('back from get');
         var locationid = req.params.locationid;
         if (locationid) {
 
-            const location = await Loc
+            const location = await  Loc
                 .findById(locationid)
                 .select('reviews')
                 .exec();
@@ -210,7 +212,8 @@ module.exports.reviewsDeleteOne = function (req, res) {
 
 var User = mongoose.model('User');
 var getAuthor = function(req, res, callback) {
-
+    console.log(req.auth);
+    console.log('req.payload.email ' + req.payload);
     if(req.payload && req.payload.email) {
         var cbError = function (error) {
             console.log('error while finding user by email');
@@ -224,9 +227,9 @@ var getAuthor = function(req, res, callback) {
         var cbSuccess = function (result) {
             console.log('Found user by email id');
             console.log(result);
-            return done(null, result.name);
+            return callback(req, res, result.name);
         };
-        
+        console.log('req.payload.email ' + req.payload.email);
         User.findOne({email : req.payload.email}).then(cbSuccess, cbError );
 
     } else {

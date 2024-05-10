@@ -4,8 +4,8 @@ var { expressjwt: jwt } = require('express-jwt');
 
 var auth = jwt({
     secret: process.env.LOC8R_JWT_SECRET,
-    algorithms: ["sha512"],
-    userProperty: 'payload'
+    algorithms: ["HS256"],
+    requestProperty : 'payload'
 });
 
 var ctrlLocations = require('../controllers/locations');
