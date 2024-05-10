@@ -33,8 +33,10 @@ var appClientFiles = [
   'app_client/about/about.controller.js',
   'app_client/locationDetail/locationDetail.controller.js',
   'app_client/reviewModal/reviewModal.controller.js',
+  'app_client/auth/register/register.controller.js',
   'app_client/common/services/geolocation.service.js',
   'app_client/common/services/loc8rData.service.js',
+  'app_client/common/services/authentication.service.js',
   'app_client/common/filters/formatDistance.filter.js',
   'app_client/common/filters/addHtmlLineBreaks.filter.js',
   'app_client/common/directives/ratingStars/ratingStars.directive.js',
@@ -70,6 +72,14 @@ app.use(function (req, res) {
 //app.use('/', indexRouter);
 //app.use('/users', usersRouter);
 
+// error handlers
+// Catch unauthorised errors
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401);
+    res.json({ "message": err.name + ": " + err.message });
+  }
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

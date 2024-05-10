@@ -20,7 +20,7 @@ passport.use(
             console.log(result);
             return done(null, result);
         };
-        console.log('here');
+        
         User
             .findOne({email: username})
             .then(cbSuccess, cbError);

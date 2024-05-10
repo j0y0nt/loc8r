@@ -1,5 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var { expressjwt: jwt } = require('express-jwt');
+
+var auth = jwt({
+    secret: process.env.LOC8R_JWT_SECRET,
+    algorithms: ["sha512"],
+    userProperty: 'payload'
+});
 
 var ctrlLocations = require('../controllers/locations');
 var ctrlReviews = require('../controllers/reviews');
@@ -13,10 +20,10 @@ router.put('/locations/:locationid', ctrlLocations.locationsUpdateOne);
 router.delete('/locations/:locationid', ctrlLocations.locationsDeleteOne);
 
 // reviews
-router.post('/locations/:locationid/reviews', ctrlReviews.reviewsCreate);
+router.post('/locations/:locationid/reviews', auth, ctrlReviews.reviewsCreate);
 router.get('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsReadOne);
-router.put('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsupdateOne);
-router.delete('/locations/:locationid/reviews/:reviewid', ctrlReviews.reviewsDeleteOne);
+router.put('/locations/:locationid/reviews/:reviewid', auth, ctrlReviews.reviewsupdateOne);
+router.delete('/locations/:locationid/reviews/:reviewid', auth, ctrlReviews.reviewsDeleteOne);
 
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
